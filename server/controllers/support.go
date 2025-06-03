@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"strconv"
 	"time"
 	"strconv"
 
@@ -32,14 +33,14 @@ type CreateTicketInput struct {
 }
 
 type ITicketInfo struct {
-	ID             uint      `json:"id"`
-	Subject        string    `json:"subject"`
-	Status         string    `json:"status"` // "new", "active" или "closed"
-	UserID         uint      `json:"user_id"`
-	UserName       string    `json:"user_name"`
-	OperatorID     *uint     `json:"operator_id"`     // nil, если ещё не назначен
-	OperatorName   *string   `json:"operator_name"`   // nil, если ещё не назначен
-	LastMessageAt  time.Time `json:"last_message_at"` // время последнего сообщения
+	ID            uint      `json:"id"`
+	Subject       string    `json:"subject"`
+	Status        string    `json:"status"` // "new", "active" или "closed"
+	UserID        uint      `json:"user_id"`
+	UserName      string    `json:"user_name"`
+	OperatorID    *uint     `json:"operator_id"`     // nil, если ещё не назначен
+	OperatorName  *string   `json:"operator_name"`   // nil, если ещё не назначен
+	LastMessageAt time.Time `json:"last_message_at"` // время последнего сообщения
 }
 
 // CreateTicket — создаёт новый тикет и первое сообщение

@@ -41,71 +41,71 @@ type MonthQuery struct {
 
 // CreateEvent создает новое событие в семье
 func CreateEvent(c *fiber.Ctx) error {
-    // JWT
-    claims, ok := c.Locals("user").(jwt.MapClaims)
-    if !ok {
-        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Нет JWT claims"})
-    }
-    userIDFloat, ok := claims["user_id"].(float64)
-    if !ok {
-        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Неверный user_id"})
-    }
-    userID := uint(userIDFloat)
+	// JWT
+	claims, ok := c.Locals("user").(jwt.MapClaims)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Нет JWT claims"})
+	}
+	userIDFloat, ok := claims["user_id"].(float64)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Неверный user_id"})
+	}
+	userID := uint(userIDFloat)
 
-    // Находим пользователя
-    var user models.User
-    if err := config.DB.First(&user, userID).Error; err != nil {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Пользователь не найден"})
-    }
-    if user.FamilyID == 0 {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "У пользователя нет семьи"})
-    }
+	// Находим пользователя
+	var user models.User
+	if err := config.DB.First(&user, userID).Error; err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Пользователь не найден"})
+	}
+	if user.FamilyID == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "У пользователя нет семьи"})
+	}
 
-    // Парсим входные данные
-    var input CreateEventInput
-    if err := c.BodyParser(&input); err != nil {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Ошибка парсинга JSON"})
-    }
+	// Парсим входные данные
+	var input CreateEventInput
+	if err := c.BodyParser(&input); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Ошибка парсинга JSON"})
+	}
 
-    // Проверим, что такой календарь существует и принадлежит семье
-    var cal models.Calendar
-    if err := config.DB.First(&cal, input.CalendarID).Error; err != nil {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Календарь не найден"})
-    }
-    if cal.FamilyID != user.FamilyID {
-        return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "Нет доступа к календарю"})
-    }
+	// Проверим, что такой календарь существует и принадлежит семье
+	var cal models.Calendar
+	if err := config.DB.First(&cal, input.CalendarID).Error; err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Календарь не найден"})
+	}
+	if cal.FamilyID != user.FamilyID {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "Нет доступа к календарю"})
+	}
 
-    // Конвертация времени
-    start, err := time.Parse(time.RFC3339, input.StartTime)
-    if err != nil {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Некорректный формат start_time"})
-    }
-    end, err := time.Parse(time.RFC3339, input.EndTime)
-    if err != nil {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Некорректный формат end_time"})
-    }
+	// Конвертация времени
+	start, err := time.Parse(time.RFC3339, input.StartTime)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Некорректный формат start_time"})
+	}
+	end, err := time.Parse(time.RFC3339, input.EndTime)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Некорректный формат end_time"})
+	}
 
-    event := models.Event{
-        CalendarID:  input.CalendarID,
-        FamilyID:    user.FamilyID,
-        Title:       input.Title,
-        Description: input.Description,
-        StartTime:   start,
-        EndTime:     end,
-        CreatedBy:   userID,
-        IsCompleted: false,
-    }
-    // Если color не пустой — сохраняем
-    if input.Color != "" {
-        event.Color = &input.Color
-    }
+	event := models.Event{
+		CalendarID:  input.CalendarID,
+		FamilyID:    user.FamilyID,
+		Title:       input.Title,
+		Description: input.Description,
+		StartTime:   start,
+		EndTime:     end,
+		CreatedBy:   userID,
+		IsCompleted: false,
+	}
+	// Если color не пустой — сохраняем
+	if input.Color != "" {
+		event.Color = &input.Color
+	}
 
-    if err := config.DB.Create(&event).Error; err != nil {
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Ошибка сохранения события"})
-    }
+	if err := config.DB.Create(&event).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Ошибка сохранения события"})
+	}
 
-    return c.JSON(fiber.Map{"event": event})
+	return c.JSON(fiber.Map{"event": event})
 }
 
 // UpdateEvent меняет существующее событие (например, период, цвет и т. д.)
@@ -116,7 +116,10 @@ func UpdateEvent(c *fiber.Ctx) error {
 	}
 	userID := uint(claims["user_id"].(float64))
 
-	eventID := c.Params("id")
+	eventID, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Неверный ID события"})
+	}
 	var event models.Event
 	if err := config.DB.First(&event, eventID).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Событие не найдено"})
@@ -235,7 +238,10 @@ func CompleteEvent(c *fiber.Ctx) error {
 	}
 	userID := uint(claims["user_id"].(float64))
 
-	eventID := c.Params("id")
+	eventID, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Неверный ID события"})
+	}
 	var event models.Event
 	if err := config.DB.First(&event, eventID).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Событие не найдено"})
@@ -334,46 +340,49 @@ func GetCalendarsList(c *fiber.Ctx) error {
 }
 
 func GetEventsForCalendar(c *fiber.Ctx) error {
-    claims, ok := c.Locals("user").(jwt.MapClaims)
-    if !ok {
-        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Нет JWT claims"})
-    }
-    userID := uint(claims["user_id"].(float64))
+	claims, ok := c.Locals("user").(jwt.MapClaims)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Нет JWT claims"})
+	}
+	userID := uint(claims["user_id"].(float64))
 
-    // Находим пользователя
-    var user models.User
-    if err := config.DB.First(&user, userID).Error; err != nil {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Пользователь не найден"})
-    }
-    if user.FamilyID == 0 {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "У пользователя нет семьи"})
-    }
+	// Находим пользователя
+	var user models.User
+	if err := config.DB.First(&user, userID).Error; err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Пользователь не найден"})
+	}
+	if user.FamilyID == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "У пользователя нет семьи"})
+	}
 
-    calendarID := c.Params("calendar_id")
-    var cal models.Calendar
-    if err := config.DB.First(&cal, calendarID).Error; err != nil {
-        return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Календарь не найден"})
-    }
-    if cal.FamilyID != user.FamilyID {
-        return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "Нет доступа к календарю"})
-    }
+	calendarID, err := c.ParamsInt("calendar_id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Неверный ID календаря"})
+	}
+	var cal models.Calendar
+	if err := config.DB.First(&cal, calendarID).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Календарь не найден"})
+	}
+	if cal.FamilyID != user.FamilyID {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "Нет доступа к календарю"})
+	}
 
-    month := c.QueryInt("month", 0)
-    year := c.QueryInt("year", 0)
-    if month < 1 || month > 12 || year < 1 {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Нужны валидные month и year"})
-    }
+	month := c.QueryInt("month", 0)
+	year := c.QueryInt("year", 0)
+	if month < 1 || month > 12 || year < 1 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Нужны валидные month и year"})
+	}
 
-    startDate := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
-    endDate := startDate.AddDate(0, 1, 0)
+	startDate := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
+	endDate := startDate.AddDate(0, 1, 0)
 
-    var events []models.Event
-    if err := config.DB.
-        Where("calendar_id = ? AND start_time >= ? AND start_time < ?", cal.ID, startDate, endDate).
-        Order("start_time ASC").
-        Find(&events).Error; err != nil {
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Ошибка при запросе"})
-    }
+	var events []models.Event
+	if err := config.DB.
+		Where("calendar_id = ? AND start_time >= ? AND start_time < ?", cal.ID, startDate, endDate).
+		Order("start_time ASC").
+		Find(&events).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Ошибка при запросе"})
+	}
 
-    return c.JSON(events)
+	return c.JSON(events)
 }
