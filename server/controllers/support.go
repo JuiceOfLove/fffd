@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"time"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
@@ -122,9 +123,12 @@ func GetMyTickets(c *fiber.Ctx) error {
 // GetTicketInfo — возвращает детальную информацию по тикету, включая имена user и operator
 func GetTicketInfo(c *fiber.Ctx) error {
 	// 1. Получаем сам тикет
-	ticketIDParam := c.Params("id")
+	ticketID, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Неверный ID тикета"})
+	}
 	var ticket models.Ticket
-	if err := config.DB.First(&ticket, ticketIDParam).Error; err != nil {
+	if err := config.DB.First(&ticket, ticketID).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Тикет не найден"})
 	}
 
@@ -175,9 +179,12 @@ func GetTicketInfo(c *fiber.Ctx) error {
 
 // GetTicketMessages — возвращает историю сообщений тикета (доступ по тому же принципу)
 func GetTicketMessages(c *fiber.Ctx) error {
-	ticketIDParam := c.Params("id")
+	ticketID, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Неверный ID тикета"})
+	}
 	var ticket models.Ticket
-	if err := config.DB.First(&ticket, ticketIDParam).Error; err != nil {
+	if err := config.DB.First(&ticket, ticketID).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Тикет не найден"})
 	}
 
@@ -250,9 +257,12 @@ func AssignTicket(c *fiber.Ctx) error {
 	}
 	operatorID := uint(claims["user_id"].(float64))
 
-	ticketIDParam := c.Params("id")
+	ticketID, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Неверный ID тикета"})
+	}
 	var ticket models.Ticket
-	if err := config.DB.First(&ticket, ticketIDParam).Error; err != nil {
+	if err := config.DB.First(&ticket, ticketID).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Тикет не найден"})
 	}
 	if ticket.Status != "new" {
@@ -278,9 +288,12 @@ func CloseTicket(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "Доступ только для операторов"})
 	}
 
-	ticketIDParam := c.Params("id")
+	ticketID, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Неверный ID тикета"})
+	}
 	var ticket models.Ticket
-	if err := config.DB.First(&ticket, ticketIDParam).Error; err != nil {
+	if err := config.DB.First(&ticket, ticketID).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Тикет не найден"})
 	}
 	if ticket.Status != "active" {
@@ -305,9 +318,12 @@ type CreateTicketMessageInput struct {
 
 // CreateTicketMessage — создаёт новое сообщение в тикете
 func CreateTicketMessage(c *fiber.Ctx) error {
-	ticketIDParam := c.Params("id")
+	ticketID, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Неверный ID тикета"})
+	}
 	var ticket models.Ticket
-	if err := config.DB.First(&ticket, ticketIDParam).Error; err != nil {
+	if err := config.DB.First(&ticket, ticketID).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Тикет не найден"})
 	}
 
@@ -433,9 +449,14 @@ func SupportTicketChatWS(c *websocket.Conn) {
 	userID := uint(claims["user_id"].(float64))
 	role := claims["role"].(string)
 
-	ticketIDParam := c.Params("id")
+	ticketIDStr := c.Params("id")
+	ticketIDInt, err := strconv.Atoi(ticketIDStr)
+	if err != nil {
+		c.Close()
+		return
+	}
 	var ticket models.Ticket
-	if err := config.DB.First(&ticket, ticketIDParam).Error; err != nil {
+	if err := config.DB.First(&ticket, ticketIDInt).Error; err != nil {
 		c.Close()
 		return
 	}
@@ -448,12 +469,12 @@ func SupportTicketChatWS(c *websocket.Conn) {
 		return
 	}
 
-	ticketID := ticket.ID
+	tid := ticket.ID
 	ticketRoomsMu.Lock()
-	if ticketRooms[ticketID] == nil {
-		ticketRooms[ticketID] = make(map[*websocket.Conn]string)
+	if ticketRooms[tid] == nil {
+		ticketRooms[tid] = make(map[*websocket.Conn]string)
 	}
-	ticketRooms[ticketID][c] = role
+	ticketRooms[tid][c] = role
 	ticketRoomsMu.Unlock()
 
 	for {
@@ -463,9 +484,9 @@ func SupportTicketChatWS(c *websocket.Conn) {
 	}
 
 	ticketRoomsMu.Lock()
-	delete(ticketRooms[ticketID], c)
-	if len(ticketRooms[ticketID]) == 0 {
-		delete(ticketRooms, ticketID)
+	delete(ticketRooms[tid], c)
+	if len(ticketRooms[tid]) == 0 {
+		delete(ticketRooms, tid)
 	}
 	ticketRoomsMu.Unlock()
 	c.Close()

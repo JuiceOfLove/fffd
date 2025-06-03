@@ -31,6 +31,7 @@ func main() {
 		AllowOrigins:     "http://localhost:5173",
 		AllowCredentials: true,
 		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
+		AllowHeaders:     "Authorization, Content-Type",
 	}))
 
 	app.Static("/uploads", "./public/uploads")
