@@ -1,0 +1,154 @@
+.box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem;
+  background: #fbf5ff;           /* светлый лавандовый фон */
+  border-top: 1px solid #e1bee7; /* бледно-лиловая граница */
+}
+
+/* ---------- Поле ввода текстового сообщения ---------- */
+.box input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  padding: 0.6rem 0.7rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #ffffff;           /* белый фон */
+  color: #2c1a36;                /* тёмно-лиловый текст */
+  font-size: 0.95rem;
+}
+
+.clip {
+  cursor: pointer;
+  color: #8e24aa;                /* пурпурная иконка */
+  font-size: 1.2rem;
+}
+
+/* ---------- Кнопка отправки (стрелка) ---------- */
+button[type="submit"] {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  color: #8e24aa;                /* пурпурная стрелка */
+  cursor: pointer;
+}
+button[type="submit"]:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ---------- Полоса предпросмотра ответа ---------- */
+.replyBar {
+  position: absolute;
+  top: -2.2rem;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  background: #eedeff;           /* супер-тускло-лавандовый фон */
+  border-left: 3px solid #8e24aa; /* яркий пурпурный акцент */
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  color: #2c1a36;
+}
+
+.replyBar button {
+  all: unset;
+  margin-left: auto;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #8e24aa;
+}
+
+/* ---------- Оверлей-модалка для фото ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: rgba(142, 36, 170, 0.6); /* полупрозрачный пурпур */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- Модалка с предпросмотром фото ---------- */
+.modal {
+  position: relative;
+  width: 320px;
+  max-width: 90%;
+  background: #ffffff;           /* белая карточка */
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(74, 0, 128, 0.15);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.close {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: #2c1a36;
+  cursor: pointer;
+}
+
+.title {
+  margin: 0 auto 0.4rem;
+  font-size: 1rem;
+  color: #2c1a36;
+  font-weight: 600;
+}
+
+.preview {
+  width: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #000;
+}
+
+.caption {
+  padding: 0.55rem 0.7rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #f3e5f5;           /* очень светлая лавандовая */
+  color: #2c1a36;
+  font-size: 0.9rem;
+}
+
+.sendBtn {
+  align-self: flex-end;
+  padding: 0.4rem 1.2rem;
+  background: #8e24aa;           /* насыщенный пурпурный */
+  border: none;
+  border-radius: 0.7rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.sendBtn:hover {
+  background: #6a1b9a;
+}
+.sendBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ---------- Адаптивность ---------- */
+@media (max-width: 600px) {
+  .box input[type="text"] {
+    font-size: 0.9rem;
+  }
+  .sendBtn {
+    padding: 0.3rem 1rem;
+    font-size: 0.9rem;
+  }
+}

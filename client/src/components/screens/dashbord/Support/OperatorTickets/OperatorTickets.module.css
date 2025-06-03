@@ -1,0 +1,103 @@
+.container {
+  max-width: 900px;
+  margin: 1rem auto;
+  padding: 1rem;
+  background: #fbf5ff; /* очень светлый лавандовый */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(74, 0, 128, 0.15);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #2c1a36;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tabBtn {
+  background: #ffffff;                /* белый фон */
+  color: #5e35b1;                     /* тёмный пурпурный */
+  border: 1px solid #e1bee7;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.tabBtn:hover {
+  background: #f3e5f5;
+}
+.tabBtn.active {
+  background: #8e24aa;                /* насыщенный пурпурный */
+  color: #fff;
+  border-color: #6a1b9a;
+}
+
+/* Список тикетов */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ticketItem {
+  background: #ffffff; /* белый фон */
+  border: 1px solid #e1bee7;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.ticketItem:hover {
+  background: #f3e5f5;
+  box-shadow: 0 2px 6px rgba(74, 0, 128, 0.1);
+}
+
+.subject {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c1a36;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.userName {
+  font-size: 0.9rem;
+  color: #5e35b1;
+}
+
+.date {
+  font-size: 0.85rem;
+  color: #8e24aa;
+}
+
+.empty {
+  text-align: center;
+  color: #666;
+  padding: 2rem;
+}
+
+/* Адаптивность */
+@media (max-width: 600px) {
+  .ticketItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .meta {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+}

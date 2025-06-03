@@ -1,0 +1,27 @@
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list li {
+  display: flex;
+  align-items: center;
+  margin: 0.4rem 0;
+  font-size: 0.85rem;
+}
+
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.on .dot {
+  background: #4caf50; 
+}
+
+.off .dot {
+  background: #777;
+}

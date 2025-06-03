@@ -1,0 +1,36 @@
+.adminContainer {
+    background: radial-gradient(ellipse at bottom, #141027 0%, #1c1a31 100%);
+    color: #fff;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  }
+
+  .adminContainer h1 {
+    text-align: center;
+    color: #c3bff9;
+    margin-bottom: 1.5rem;
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: left;
+  }
+
+  .table th {
+    background-color: rgba(20, 16, 39, 0.9);
+    color: #c3bff9;
+  }
+
+  .table tr:nth-child(even) {
+    background-color: rgba(20, 16, 39, 0.73);
+  }

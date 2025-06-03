@@ -1,0 +1,112 @@
+.msg {
+  max-width: 40%;                /* уменьшили до 50% вместо 60% */
+  margin: 0.4rem 0;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.8rem;
+  position: relative;
+  font-size: 0.9rem;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.mine  {
+  margin-left: auto;
+  background: #8e24aa;
+  color: #fff;
+}
+
+.theirs {
+  margin-right: auto;
+  background: #ffffff;
+  color: #2c1a36;
+  border: 1px solid #e1bee7;
+}
+
+.author {
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+  color: #5e35b1;                /* тёмный пурпурный */
+}
+
+.mine .author  {
+  color: #fff;                   /* в своих пурпурных пузырях имя белое */
+}
+
+/* ───── meta-время ───── */
+.meta {
+  font-size: 0.65rem;
+  opacity: 0.6;
+  margin-top: 0.3rem;
+  text-align: right;
+  color: inherit;
+}
+
+/* ───── блок preview-reply ───── */
+.reply {
+  position: relative;
+  background: #ede7f6;           /* бледно-лавандовый фон */
+  border-radius: 0.6rem;
+  padding: 0.3rem 0.6rem 0.3rem 0.9rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.85rem;
+  color: #2c1a36;
+  cursor: pointer;
+}
+
+.replyLine {
+  position: absolute;
+  left: 0.35rem;
+  top: 0.2rem;
+  bottom: 0.2rem;
+  width: 3px;
+  background: #8e24aa;           /* тёмный пурпурный */
+  border-radius: 3px;
+}
+
+.replyText {
+  margin-left: 0.6rem;
+  opacity: 0.8;
+  line-height: 1.15;
+}
+
+/* ───── картинка ───── */
+.media img {
+  max-width: 100%;
+  border-radius: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+/* ───── минимальный context-menu ───── */
+.menu {
+  position: fixed;
+  z-index: 2000;
+  min-width: 120px;
+  background: #ffffff;
+  border: 1px solid #e1bee7;
+  border-radius: 0.4rem;
+  box-shadow: 0 4px 12px rgba(74, 0, 128, 0.15);
+}
+
+.menuItem {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  color: #2c1a36;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.menuItem:hover {
+  background: #e1bee7;           /* бледно-лиловый при наведении */
+}
+
+/* Адаптивность */
+@media (max-width: 600px) {
+  .msg {
+    max-width: 80%;             /* на мобильных немного увеличиваем для читаемости */
+    font-size: 0.85rem;
+  }
+  .author {
+    font-size: 0.75rem;
+  }
+}

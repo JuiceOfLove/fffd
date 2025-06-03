@@ -1,0 +1,121 @@
+.container {
+  max-width: 900px;
+  margin: 1rem auto;
+  padding: 1rem;
+  background: #fbf5ff; /* очень светлый лавандовый */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(74, 0, 128, 0.15);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #2c1a36;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.5rem;
+  color: #5e35b1;
+}
+
+.newButton {
+  background: #8e24aa; /* насыщенный пурпурный */
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.15s;
+}
+.newButton:hover {
+  background: #6a1b9a;
+}
+
+.empty {
+  text-align: center;
+  color: #666;
+  padding: 2rem;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ticketItem {
+  background: #ffffff; /* белый фон */
+  border: 1px solid #e1bee7; /* бледно-фиолетовая рамка */
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.ticketItem:hover {
+  background: #f3e5f5;
+  box-shadow: 0 2px 6px rgba(74, 0, 128, 0.1);
+}
+
+.subject {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c1a36;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.date {
+  font-size: 0.85rem;
+  color: #5e35b1;
+}
+
+.status {
+  font-size: 0.85rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Разные статусы */
+.new .status {
+  background: #ffe5f0;     /* очень светло-розовый, но текст пурпурный */
+  color: #8e24aa;
+}
+.active .status {
+  background: #e1bee7;     /* бледно-фиолетовый */
+  color: #5e35b1;
+}
+.closed .status {
+  background: #ede7f6;     /* бледно-лавандовый */
+  color: #4a148c;
+}
+
+/* Адаптив под мобилки */
+@media (max-width: 600px) {
+  .ticketItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

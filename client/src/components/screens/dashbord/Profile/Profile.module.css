@@ -1,0 +1,30 @@
+.profileContainer {
+    background: radial-gradient(ellipse at bottom, #141027 0%, #1c1a31 100%);
+    color: #fff;
+    padding: 2rem;
+    max-width: 600px;
+    margin: 2rem auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  }
+
+  .profileContainer h1 {
+    text-align: center;
+    color: #c3bff9; /* цвет логотипа/заголовка */
+    margin-bottom: 1.5rem;
+  }
+
+  .profileItem {
+    background: rgba(20, 16, 39, 0.73);
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .profileItem strong {
+    color: #c3bff9;
+    margin-right: 0.5rem;
+  }

@@ -1,0 +1,26 @@
+.container {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fbf5ff;           /* очень светлый лавандовый */
+  padding: 2rem;
+}
+
+.card {
+  background: #ffffff;            /* белая карточка */
+  border-radius: 10px;
+  padding: 1.5rem;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(74, 0, 128, 0.15);
+  color: #2c1a36;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.msgTitle {
+  font-size: 1.2rem;
+  color: #5e35b1;                  /* тёмный пурпурный */
+  margin: 0;
+}

@@ -1,0 +1,80 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    background: radial-gradient(ellipse at bottom, #141027 0%, #1c1a31 100%);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .header {
+    height: 70px;
+    background: rgba(20, 16, 39, 0.9);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .logo {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #c3bff9; /* Светло-фиолетовый */
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .logo a {
+    text-decoration: none;
+    color: #c3bff9;
+  }
+
+  .nav {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .navLink {
+    text-decoration: none;
+    color: #eee;
+    font-size: 1rem;
+    transition: color 0.2s ease;
+    position: relative;
+  }
+
+  /* Псевдо-элемент для неонового ховера */
+  .navLink::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: linear-gradient(90deg, #8f6eff, #00f0ff);
+    transition: width 0.25s ease;
+  }
+
+  .navLink:hover {
+    color: #c3bff9;
+  }
+
+  .navLink:hover::after {
+    width: 100%;
+  }
+
+  .main {
+    flex: 1;
+    padding: 2rem;
+  }
+
+  .footer {
+    background: rgba(20, 16, 39, 0.9);
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: #999;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.4);
+  }

@@ -1,0 +1,78 @@
+.container {
+    min-height: calc(100vh - 70px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    padding: 2rem;
+  }
+
+  .card {
+    background: rgba(29, 22, 50, 0.95);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 0 24px rgba(128, 99, 255, 0.4);
+  }
+
+  .title {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    color: #c3bff9;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    color: #ddd;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .inputGroup {
+    text-align: left;
+  }
+
+  .inputGroup label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+    color: #bbb;
+  }
+
+  .inputGroup input {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #3e3860;
+    border-radius: 6px;
+    background: #1e1732;
+    color: #fff;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .inputGroup input:focus {
+    border-color: #7c6bf7;
+  }
+
+  .button {
+    background: linear-gradient(90deg, #8f6eff, #00f0ff);
+    color: #fff;
+    border: none;
+    font-size: 1rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .button:hover {
+    box-shadow: 0 0 10px rgba(128, 99, 255, 0.6);
+  }

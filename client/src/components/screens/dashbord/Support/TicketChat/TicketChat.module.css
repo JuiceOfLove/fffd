@@ -1,0 +1,116 @@
+.page {
+  display: flex;
+  height: 85vh;                      /* чуть меньше, чтобы оставить место под футер */
+  background: #fbf5ff;               /* очень светлый лавандовый фон */
+  color: #2c1a36;                    /* тёмно-лиловый текст */
+}
+
+.sidebar {
+  width: 240px;
+  padding: 1rem;
+  background: #ffffff;               /* белый фон */
+  border-right: 1px solid #e1bee7;   /* бледно-фиолетовая рамка */
+  box-shadow: 2px 0 6px rgba(74, 0, 128, 0.05);
+  box-sizing: border-box;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  color: #5e35b1;                    /* тёмный пурпурный */
+}
+
+/* ---------- Основная часть: заголовок тикета + чат ---------- */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Заголовок тикета и кнопки управления */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #e1bee7;              /* бледно-фиолетовый фон */
+  border-bottom: 1px solid #d1c4e9;
+}
+
+.subject {
+  font-size: 1.2rem;
+  color: #4a148c;                    /* очень тёмный фиолет */
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.assignBtn, .closeBtn {
+  background: #8e24aa;               /* насыщенный пурпурный */
+  color: #fff;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.15s;
+}
+.assignBtn:hover, .closeBtn:hover {
+  background: #6a1b9a;               /* чуть темнее */
+}
+
+.status {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.3rem 0.6rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+
+/* статусы */
+.status.new {
+  background: #ffe5f0;
+  color: #8e24aa;
+}
+.status.active {
+  background: #e1bee7;
+  color: #5e35b1;
+}
+.status.closed {
+  background: #ede7f6;
+  color: #4a148c;
+}
+
+/* Окно сообщений */
+.messages {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  background: #ffffff;               /* белый фон под сообщениями */
+}
+
+/* Лоадер */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 1.2rem;
+  color: #5e35b1;
+}
+
+/* Адаптив для узких экранов */
+@media (max-width: 600px) {
+  .sidebar {
+    display: none;
+  }
+  .messages {
+    padding: 0.5rem;
+  }
+}
