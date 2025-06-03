@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"encoding/json"
+	"io"
 	"log"
 	"os"
 	"strconv"
 	"time"
-	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
@@ -22,8 +22,13 @@ var (
 	newTicketConnsMu = utils.NewMutex()
 )
 
+type ticketClient struct {
+	UserID uint
+	Role   string
+}
+
 var (
-	ticketRooms   = make(map[uint]map[*websocket.Conn]string)
+	ticketRooms   = make(map[uint]map[*websocket.Conn]ticketClient)
 	ticketRoomsMu = utils.NewMutex()
 )
 
@@ -473,15 +478,74 @@ func SupportTicketChatWS(c *websocket.Conn) {
 	tid := ticket.ID
 	ticketRoomsMu.Lock()
 	if ticketRooms[tid] == nil {
-		ticketRooms[tid] = make(map[*websocket.Conn]string)
+		ticketRooms[tid] = make(map[*websocket.Conn]ticketClient)
 	}
-	ticketRooms[tid][c] = role
+	ticketRooms[tid][c] = ticketClient{UserID: userID, Role: role}
 	ticketRoomsMu.Unlock()
+	broadcastTicketPresence(tid)
 
 	for {
-		if _, _, err := c.ReadMessage(); err != nil {
+		var raw json.RawMessage
+		if err := c.ReadJSON(&raw); err != nil {
+			if err == io.EOF || websocket.IsCloseError(err) {
+				break
+			}
+			log.Println("WS read error:", err)
 			break
 		}
+
+		var envelope struct {
+			Content  *string `json:"content"`
+			ReplyTo  *uint   `json:"reply_to"`
+			MediaB64 *string `json:"media"`
+			DeleteID *uint   `json:"delete_id"`
+		}
+		_ = json.Unmarshal(raw, &envelope)
+
+		if envelope.DeleteID != nil {
+			var m models.TicketMessage
+			if err := config.DB.First(&m, *envelope.DeleteID).Error; err == nil {
+				if role == "operator" || role == "admin" || m.SenderID == userID {
+					config.DB.Delete(&m)
+					broadcastTicketDelete(tid, m.ID)
+				}
+			}
+			continue
+		}
+
+		if envelope.Content == nil && envelope.MediaB64 == nil {
+			continue
+		}
+
+		var mediaURL *string
+		if envelope.MediaB64 != nil {
+			if url, err := saveBase64Image(*envelope.MediaB64, userID); err == nil {
+				mediaURL = url
+			} else {
+				log.Println("save image:", err)
+			}
+		}
+
+		senderRole := "user"
+		if role == "operator" || role == "admin" {
+			senderRole = "operator"
+		}
+		msg := models.TicketMessage{
+			TicketID:   tid,
+			SenderID:   userID,
+			SenderRole: senderRole,
+			Content:    coalesce(envelope.Content),
+			MediaURL:   mediaURL,
+			ReplyToID:  envelope.ReplyTo,
+			CreatedAt:  time.Now(),
+		}
+		if err := config.DB.Create(&msg).Error; err != nil {
+			log.Println("db create:", err)
+			continue
+		}
+		ticket.LastMessageAt = time.Now()
+		config.DB.Save(&ticket)
+		notifyTicketMessageWS(msg)
 	}
 
 	ticketRoomsMu.Lock()
@@ -490,6 +554,7 @@ func SupportTicketChatWS(c *websocket.Conn) {
 		delete(ticketRooms, tid)
 	}
 	ticketRoomsMu.Unlock()
+	broadcastTicketPresence(tid)
 	c.Close()
 }
 
@@ -576,6 +641,27 @@ func broadcastTicketDelete(ticketID, messageID uint) {
 	for conn := range ticketRooms[ticketID] {
 		if err := conn.WriteMessage(websocket.TextMessage, payload); err != nil {
 			log.Printf("WS ticket_delete error: %v\n", err)
+		}
+	}
+	ticketRoomsMu.Unlock()
+}
+
+func broadcastTicketPresence(ticketID uint) {
+	ticketRoomsMu.Lock()
+	conns := ticketRooms[ticketID]
+	ids := make([]uint, 0, len(conns))
+	for _, info := range conns {
+		if info.Role == "operator" || info.Role == "admin" {
+			ids = append(ids, info.UserID)
+		}
+	}
+	payload, _ := json.Marshal(fiber.Map{
+		"event": "support:ticket_presence",
+		"data":  ids,
+	})
+	for conn := range conns {
+		if err := conn.WriteMessage(websocket.TextMessage, payload); err != nil {
+			log.Printf("WS ticket_presence error: %v\n", err)
 		}
 	}
 	ticketRoomsMu.Unlock()
